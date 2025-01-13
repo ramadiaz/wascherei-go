@@ -6,22 +6,22 @@
 package injectors
 
 import (
-	exampleControllers "wascherei-go/api/example/controllers"
-	exampleRepositories "wascherei-go/api/example/repositories"
-	exampleServices "wascherei-go/api/example/services"
+	userControllers "wascherei-go/api/users/controllers"
+	userRepositories "wascherei-go/api/users/repositories"
+	userServices "wascherei-go/api/users/services"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/google/wire"
 	"gorm.io/gorm"
 )
 
-var exampleFeatureSet = wire.NewSet(
-	exampleRepositories.NewComponentRepository,
-	exampleServices.NewComponentServices,
-	exampleControllers.NewCompController,
+var userFeatureSet = wire.NewSet(
+	userRepositories.NewComponentRepository,
+	userServices.NewComponentServices,
+	userControllers.NewCompController,
 )
 
-func InitializeExampleController(db *gorm.DB, validate *validator.Validate) exampleControllers.CompControllers {
-	wire.Build(exampleFeatureSet)
+func InitializeUserController(db *gorm.DB, validate *validator.Validate) userControllers.CompControllers {
+	wire.Build(userFeatureSet)
 	return nil
 }
