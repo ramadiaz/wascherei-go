@@ -15,6 +15,15 @@ func NewComponentRepository() CompRepositories {
 	return &CompRepositoriesImpl{}
 }
 
+func (r *CompRepositoriesImpl) Create(ctx *gin.Context, tx *gorm.DB, data models.Users) *exceptions.Exception {
+	result := tx.Create(&data)
+	if result.Error != nil {
+		return exceptions.ParseGormError(result.Error)
+	}
+
+	return nil
+}
+
 func (r *CompRepositoriesImpl) FindByUsername(ctx *gin.Context, tx *gorm.DB, username string) (*models.Users, *exceptions.Exception) {
 	var userData models.Users
 

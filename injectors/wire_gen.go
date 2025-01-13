@@ -10,20 +10,30 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/google/wire"
 	"gorm.io/gorm"
-	"wascherei-go/api/users/controllers"
+	controllers2 "wascherei-go/api/users/controllers"
 	"wascherei-go/api/users/repositories"
-	"wascherei-go/api/users/services"
+	services2 "wascherei-go/api/users/services"
+	"wascherei-go/internal/auth/controllers"
+	"wascherei-go/internal/auth/services"
 )
 
 // Injectors from injector.go:
 
-func InitializeUserController(db *gorm.DB, validate *validator.Validate) controllers.CompControllers {
-	compRepositories := repositories.NewComponentRepository()
-	compServices := services.NewComponentServices(compRepositories, db, validate)
+func InitializeInternalAuthController(validate *validator.Validate) controllers.CompControllers {
+	compServices := services.NewComponentServices(validate)
 	compControllers := controllers.NewCompController(compServices)
+	return compControllers
+}
+
+func InitializeUserController(db *gorm.DB, validate *validator.Validate) controllers2.CompControllers {
+	compRepositories := repositories.NewComponentRepository()
+	compServices := services2.NewComponentServices(compRepositories, db, validate)
+	compControllers := controllers2.NewCompController(compServices)
 	return compControllers
 }
 
 // injector.go:
 
-var userFeatureSet = wire.NewSet(repositories.NewComponentRepository, services.NewComponentServices, controllers.NewCompController)
+var internalAuthFeatureSet = wire.NewSet(services.NewComponentServices, controllers.NewCompController)
+
+var userFeatureSet = wire.NewSet(repositories.NewComponentRepository, services2.NewComponentServices, controllers2.NewCompController)

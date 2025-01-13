@@ -8,10 +8,12 @@ import (
 	"wascherei-go/api/users/repositories"
 	"wascherei-go/pkg/exceptions"
 	"wascherei-go/pkg/helpers"
+	"wascherei-go/pkg/mapper"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -27,6 +29,23 @@ func NewComponentServices(compRepositories repositories.CompRepositories, db *go
 		DB:       db,
 		validate: validate,
 	}
+}
+
+func (s *CompServicesImpl) Create(ctx *gin.Context, data dto.UserInput) *exceptions.Exception {
+	validateErr := s.validate.Struct(data)
+	if validateErr != nil {
+		return exceptions.NewValidationException(validateErr)
+	}
+
+	dataModel := mapper.MapUserInputToModel(data)
+	dataModel.UUID = uuid.NewString()
+
+	err := s.repo.Create(ctx, s.DB, dataModel)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *CompServicesImpl) Login(ctx *gin.Context, data dto.Login) (*string, *exceptions.Exception) {
@@ -45,7 +64,7 @@ func (s *CompServicesImpl) Login(ctx *gin.Context, data dto.Login) (*string, *ex
 		return nil, err
 	}
 
-	secret := os.Getenv("JWT_SECRET")
+	JWT_SECRET := os.Getenv("JWT_SECRET")
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 
@@ -60,7 +79,7 @@ func (s *CompServicesImpl) Login(ctx *gin.Context, data dto.Login) (*string, *ex
 
 	claims["exp"] = time.Now().Add(time.Hour * 24 * 7).Unix()
 
-	secretKey := []byte(secret)
+	secretKey := []byte(JWT_SECRET)
 	tokenString, signErr := token.SignedString(secretKey)
 	if signErr != nil {
 		return nil, exceptions.NewException(http.StatusInternalServerError, exceptions.ErrTokenGenerate)

@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	internalRouter "wascherei-go/internal/routers"
 	"wascherei-go/pkg/config"
 	"wascherei-go/routers"
 
@@ -29,6 +30,9 @@ func main() {
 	corsConfig.ExposeHeaders = []string{"Content-Length"}
 	corsConfig.AllowCredentials = true
 	r.Use(cors.New(corsConfig))
+
+	internal := r.Group("/internal")
+	internalRouter.InternalRouters(internal)
 
 	api := r.Group("/api")
 	routers.CompRouters(api)

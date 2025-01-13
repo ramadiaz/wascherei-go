@@ -1,59 +1,22 @@
 package middleware
 
 import (
-	"compress/gzip"
-	"io"
 	"net/http"
-	"net/url"
 	"os"
 	"strings"
 	"wascherei-go/api/users/dto"
-	"wascherei-go/models"
 	"wascherei-go/pkg/exceptions"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/mssola/user_agent"
-	"gorm.io/gorm"
 )
 
-func GzipResponseMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		if !strings.Contains(c.Request.Header.Get("Accept-Encoding"), "gzip") {
-			c.Next()
-			return
-		}
-
-		gzipWriter := gzip.NewWriter(c.Writer)
-		defer gzipWriter.Close()
-
-		wrappedWriter := &gzipResponseWriter{
-			ResponseWriter: c.Writer,
-			Writer:         gzipWriter,
-		}
-
-		c.Writer = wrappedWriter
-		c.Writer.Header().Set("Content-Encoding", "gzip")
-		c.Writer.Header().Set("Vary", "Accept-Encoding")
-
-		c.Next()
-	}
-}
-
-type gzipResponseWriter struct {
-	gin.ResponseWriter
-	Writer io.Writer
-}
-
-func (g *gzipResponseWriter) Write(data []byte) (int, error) {
-	return g.Writer.Write(data)
-}
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		secret := os.Getenv("JWT_SECRET")
+		JWT_SECRET := os.Getenv("JWT_SECRET")
 
-		var secretKey = []byte(secret)
+		var secretKey = []byte(JWT_SECRET)
 
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
@@ -96,47 +59,6 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		c.Set("user", user)
 
-		c.Next()
-	}
-}
-
-func ClientTracker(db *gorm.DB) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		clientIP := c.ClientIP()
-
-		userAgent := c.Request.Header.Get("User-Agent")
-		ua := user_agent.New(userAgent)
-		name, version := ua.Browser()
-
-		referer := c.Request.Referer()
-
-		path := c.Request.URL.Path
-		rawQuery := c.Request.URL.RawQuery
-
-		fullURL := url.URL{
-			Path:     path,
-			RawQuery: rawQuery,
-		}
-
-		data := models.Client{
-			IP:      clientIP,
-			Browser: name,
-			Version: version,
-			OS:      ua.OS(),
-			Device:  ua.Platform(),
-			Origin:  referer,
-			API:     fullURL.String(),
-		}
-
-		go db.Create(&data)
-	}
-}
-
-func NoCacheMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
-		c.Header("Pragma", "no-cache")
-		c.Header("Expires", "Thu, 01 Jan 1970 00:00:00 GMT")
 		c.Next()
 	}
 }
