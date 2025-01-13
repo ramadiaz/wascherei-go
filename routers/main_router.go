@@ -1,8 +1,7 @@
 package routers
 
 import (
-	"net/http"
-	"wascherei-go/dto"
+	testController "wascherei-go/api/test/controllers"
 	"wascherei-go/injectors"
 	"wascherei-go/pkg/config"
 	"wascherei-go/pkg/middleware"
@@ -18,14 +17,9 @@ func CompRouters(api *gin.RouterGroup) {
 	api.Use(middleware.ClientTracker(db))
 	api.Use(middleware.GzipResponseMiddleware())
 
-	api.GET("/ping", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, dto.Response{
-			Status: http.StatusOK,
-			Message:   "pong",
-		})
-	})
+	api.GET("/ping", testController.Ping)
 
-	exampleController := injectors.InitializeExampleController(db, validate)
+	userController := injectors.InitializeUserController(db, validate)
 
-	ExampleRoutes(api, exampleController)
+	AuthRoutes(api, userController)
 }

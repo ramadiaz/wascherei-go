@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
-	"wascherei-go/dto"
+	"wascherei-go/api/users/dto"
 	"wascherei-go/models"
 	"wascherei-go/pkg/exceptions"
 
@@ -83,10 +83,15 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		user := dto.User{
-			ID:    claims["id"].(string),
-			Name:  claims["name"].(string),
-			Email: claims["email"].(string),
+		user := dto.UserOutput{
+			UUID:            claims["uuid"].(string),
+			Username:        claims["username"].(string),
+			BusinessName:    claims["business_name"].(string),
+			BusinessOwner:   claims["business_owner"].(string),
+			BusinessPhone:   claims["business_phone"].(string),
+			BusinessAddress: claims["business_address"].(string),
+			BusinessLogo:    claims["business_logo"].(string),
+			Slogan:          claims["slogan"].(string),
 		}
 
 		c.Set("user", user)
