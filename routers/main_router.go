@@ -3,17 +3,14 @@ package routers
 import (
 	testController "wascherei-go/api/test/controllers"
 	"wascherei-go/injectors"
-	"wascherei-go/pkg/config"
 	"wascherei-go/pkg/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"gorm.io/gorm"
 )
 
-func CompRouters(api *gin.RouterGroup) {
-	db := config.InitDB()
-	validate := validator.New(validator.WithRequiredStructEnabled())
-
+func CompRouters(api *gin.RouterGroup, db *gorm.DB, validate *validator.Validate) {
 	api.Use(middleware.ClientTracker(db))
 	api.Use(middleware.GzipResponseMiddleware())
 

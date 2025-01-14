@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 )
 
@@ -31,11 +32,14 @@ func main() {
 	corsConfig.AllowCredentials = true
 	r.Use(cors.New(corsConfig))
 
+	db := config.InitDB()
+	validate := validator.New(validator.WithRequiredStructEnabled())
+
 	internal := r.Group("/internal")
-	internalRouter.InternalRouters(internal)
+	internalRouter.InternalRouters(internal, db, validate)
 
 	api := r.Group("/api")
-	routers.CompRouters(api)
+	routers.CompRouters(api, db, validate)
 
 	var host string
 	switch environment {
