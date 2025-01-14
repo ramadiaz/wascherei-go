@@ -62,7 +62,7 @@ func (s *CompServicesImpl) Login(ctx *gin.Context, data dto.Login) (*string, *ex
 
 	userData, err := s.repo.FindByUsername(ctx, s.DB, data.Username)
 	if err != nil {
-		return nil, exceptions.NewException(http.StatusUnauthorized, exceptions.ErrInvalidCredentials)
+		return nil, err
 	}
 
 	err = helpers.CheckPasswordHash(data.Password, userData.HashedPassword)
