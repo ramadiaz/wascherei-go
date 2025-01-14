@@ -37,10 +37,16 @@ func (s *CompServicesImpl) Create(ctx *gin.Context, data dto.UserInput) *excepti
 		return exceptions.NewValidationException(validateErr)
 	}
 
+	hashedPassword, err := helpers.HashPassword(data.Password)
+	if err != nil {
+		return err
+	}
+
 	dataModel := mapper.MapUserInputToModel(data)
 	dataModel.UUID = uuid.NewString()
+	dataModel.HashedPassword = hashedPassword
 
-	err := s.repo.Create(ctx, s.DB, dataModel)
+	err = s.repo.Create(ctx, s.DB, dataModel)
 	if err != nil {
 		return err
 	}
