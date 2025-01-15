@@ -34,9 +34,9 @@ func (h *CompControllersImpl) Create(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, dto.Response{
-		Status:  http.StatusOK,
-		Message: "register success",
+	ctx.JSON(http.StatusCreated, dto.Response{
+		Status:  http.StatusCreated,
+		Message: "create success",
 	})
 }
 
