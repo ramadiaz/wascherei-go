@@ -14,3 +14,13 @@ migrate:
 # Clean the build (remove binaries and build artifacts)
 clean:
 	rm -f bin/wascherei-go
+
+# Change environment to production
+env-prod:
+	rm .env
+	cp .env.prod .env
+
+# Change environment to development
+env-dev:
+	rm .env
+	cp .env.dev .env
