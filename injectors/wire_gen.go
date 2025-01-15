@@ -13,6 +13,9 @@ import (
 	controllers3 "wascherei-go/api/products/controllers"
 	repositories2 "wascherei-go/api/products/repositories"
 	services3 "wascherei-go/api/products/services"
+	controllers4 "wascherei-go/api/transactions/controllers"
+	repositories3 "wascherei-go/api/transactions/repositories"
+	services4 "wascherei-go/api/transactions/services"
 	controllers2 "wascherei-go/api/users/controllers"
 	"wascherei-go/api/users/repositories"
 	services2 "wascherei-go/api/users/services"
@@ -42,6 +45,13 @@ func InitializeProductController(db *gorm.DB, validate *validator.Validate) cont
 	return compControllers
 }
 
+func InitializeTransactionController(db *gorm.DB, validate *validator.Validate) controllers4.CompControllers {
+	compRepositories := repositories3.NewComponentRepository()
+	compServices := services4.NewComponentServices(compRepositories, db, validate)
+	compControllers := controllers4.NewCompController(compServices)
+	return compControllers
+}
+
 // injector.go:
 
 var internalAuthFeatureSet = wire.NewSet(services.NewComponentServices, controllers.NewCompController)
@@ -49,3 +59,5 @@ var internalAuthFeatureSet = wire.NewSet(services.NewComponentServices, controll
 var userFeatureSet = wire.NewSet(repositories.NewComponentRepository, services2.NewComponentServices, controllers2.NewCompController)
 
 var productFeatureSet = wire.NewSet(repositories2.NewComponentRepository, services3.NewComponentServices, controllers3.NewCompController)
+
+var transactionFeatureSet = wire.NewSet(repositories3.NewComponentRepository, services4.NewComponentServices, controllers4.NewCompController)

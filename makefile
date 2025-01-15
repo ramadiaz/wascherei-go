@@ -35,3 +35,6 @@ env-prod:
 env-dev:
 	rm .env
 	cp .env.dev .env
+
+wire:
+	wire gen ./injectors

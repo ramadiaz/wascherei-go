@@ -16,6 +16,10 @@ import (
 	productControllers "wascherei-go/api/products/controllers"
 	productRepositories "wascherei-go/api/products/repositories"
 	productServices "wascherei-go/api/products/services"
+	
+	transactionControllers "wascherei-go/api/transactions/controllers"
+	transactionRepositories "wascherei-go/api/transactions/repositories"
+	transactionServices "wascherei-go/api/transactions/services"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/google/wire"
@@ -39,6 +43,12 @@ var productFeatureSet = wire.NewSet(
 	productControllers.NewCompController,
 )
 
+var transactionFeatureSet = wire.NewSet(
+	transactionRepositories.NewComponentRepository,
+	transactionServices.NewComponentServices,
+	transactionControllers.NewCompController,
+)
+
 func InitializeInternalAuthController(validate *validator.Validate) internalAuthControllers.CompControllers {
 	wire.Build(internalAuthFeatureSet)
 	return nil
@@ -51,5 +61,10 @@ func InitializeUserController(db *gorm.DB, validate *validator.Validate) userCon
 
 func InitializeProductController(db *gorm.DB, validate *validator.Validate) productControllers.CompControllers {
 	wire.Build(productFeatureSet)
+	return nil
+}
+
+func InitializeTransactionController(db *gorm.DB, validate *validator.Validate) transactionControllers.CompControllers {
+	wire.Build(transactionFeatureSet)
 	return nil
 }

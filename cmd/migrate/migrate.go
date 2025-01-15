@@ -12,6 +12,7 @@ func main() {
 		&models.Client{},
 		&models.Users{},
 		&models.Products{},
+		&models.Transactions{},
 	)
 	if err != nil {
 		panic("failed to migrate models: " + err.Error())
