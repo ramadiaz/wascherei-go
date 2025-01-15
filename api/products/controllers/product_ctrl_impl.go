@@ -47,3 +47,23 @@ func (h *CompControllersImpl) Create(ctx *gin.Context) {
 		Message: "create success",
 	})
 }
+
+func (h *CompControllersImpl) FindByUserUUID(ctx *gin.Context) {
+	userData, err := helpers.GetUserData(ctx)
+	if err != nil {
+		ctx.JSON(err.Status, err)
+		return
+	}
+
+	data, err := h.services.FindByUserUUID(ctx, userData.UUID)
+	if err != nil {
+		ctx.JSON(err.Status, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dto.Response{
+		Status:  http.StatusOK,
+		Body:    data,
+		Message: "find success",
+	})
+}

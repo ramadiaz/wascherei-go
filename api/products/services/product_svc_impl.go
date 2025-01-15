@@ -42,3 +42,17 @@ func (s *CompServicesImpl) Create(ctx *gin.Context, data dto.ProductInput) *exce
 
 	return nil
 }
+
+func (s *CompServicesImpl) FindByUserUUID(ctx *gin.Context, UserUUID string) (*[]dto.ProductOutput, *exceptions.Exception) {
+	data, err := s.repo.FindByUserUUID(ctx, s.DB, UserUUID)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []dto.ProductOutput
+	for _, product := range *data {
+		result = append(result, mapper.MapProductModelToInput(product))
+	}
+
+	return &result, nil
+}

@@ -12,5 +12,6 @@ func ProductRoutes(r *gin.RouterGroup, productController controllers.CompControl
 	productGroup.Use(middleware.AuthMiddleware())
 	{
 		productGroup.POST("/create", productController.Create)
+		productGroup.GET("/getall", productController.FindByUserUUID)
 	}
 }
