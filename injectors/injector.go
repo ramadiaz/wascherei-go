@@ -6,12 +6,16 @@
 package injectors
 
 import (
+	internalAuthControllers "wascherei-go/internal/auth/controllers"
+	internalAuthServices "wascherei-go/internal/auth/services"
+
 	userControllers "wascherei-go/api/users/controllers"
 	userRepositories "wascherei-go/api/users/repositories"
 	userServices "wascherei-go/api/users/services"
 
-	internalAuthControllers "wascherei-go/internal/auth/controllers"
-	internalAuthServices "wascherei-go/internal/auth/services"
+	productControllers "wascherei-go/api/products/controllers"
+	productRepositories "wascherei-go/api/products/repositories"
+	productServices "wascherei-go/api/products/services"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/google/wire"
@@ -29,6 +33,12 @@ var userFeatureSet = wire.NewSet(
 	userControllers.NewCompController,
 )
 
+var productFeatureSet = wire.NewSet(
+	productRepositories.NewComponentRepository,
+	productServices.NewComponentServices,
+	productControllers.NewCompController,
+)
+
 func InitializeInternalAuthController(validate *validator.Validate) internalAuthControllers.CompControllers {
 	wire.Build(internalAuthFeatureSet)
 	return nil
@@ -36,5 +46,10 @@ func InitializeInternalAuthController(validate *validator.Validate) internalAuth
 
 func InitializeUserController(db *gorm.DB, validate *validator.Validate) userControllers.CompControllers {
 	wire.Build(userFeatureSet)
+	return nil
+}
+
+func InitializeProductController(db *gorm.DB, validate *validator.Validate) productControllers.CompControllers {
+	wire.Build(productFeatureSet)
 	return nil
 }

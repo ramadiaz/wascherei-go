@@ -17,6 +17,8 @@ func CompRouters(api *gin.RouterGroup, db *gorm.DB, validate *validator.Validate
 	api.GET("/ping", testController.Ping)
 
 	userController := injectors.InitializeUserController(db, validate)
+	productController := injectors.InitializeProductController(db, validate)
 
 	AuthRoutes(api, userController)
+	ProductRoutes(api, productController)
 }

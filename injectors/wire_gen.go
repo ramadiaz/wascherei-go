@@ -10,6 +10,9 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/google/wire"
 	"gorm.io/gorm"
+	controllers3 "wascherei-go/api/products/controllers"
+	repositories2 "wascherei-go/api/products/repositories"
+	services3 "wascherei-go/api/products/services"
 	controllers2 "wascherei-go/api/users/controllers"
 	"wascherei-go/api/users/repositories"
 	services2 "wascherei-go/api/users/services"
@@ -32,8 +35,17 @@ func InitializeUserController(db *gorm.DB, validate *validator.Validate) control
 	return compControllers
 }
 
+func InitializeProductController(db *gorm.DB, validate *validator.Validate) controllers3.CompControllers {
+	compRepositories := repositories2.NewComponentRepository()
+	compServices := services3.NewComponentServices(compRepositories, db, validate)
+	compControllers := controllers3.NewCompController(compServices)
+	return compControllers
+}
+
 // injector.go:
 
 var internalAuthFeatureSet = wire.NewSet(services.NewComponentServices, controllers.NewCompController)
 
 var userFeatureSet = wire.NewSet(repositories.NewComponentRepository, services2.NewComponentServices, controllers2.NewCompController)
+
+var productFeatureSet = wire.NewSet(repositories2.NewComponentRepository, services3.NewComponentServices, controllers3.NewCompController)

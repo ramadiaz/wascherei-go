@@ -23,4 +23,6 @@ type Users struct {
 	CreatedAt time.Time
 	UpdatedAt *time.Time
 	DeletedAt *time.Time `gorm:"index"`
+
+	Products []Products `gorm:"foreignKey:UserUUID;references:UUID"`
 }
