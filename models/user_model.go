@@ -10,7 +10,7 @@ type Users struct {
 	gorm.Model
 
 	ID              uint   `gorm:"not null;unique;primaryKey"`
-	UUID            string `gorm:"not null;unique"`
+	UUID            string `gorm:"not null;unique;index"`
 	Username        string `gorm:"not null;unique;index"`
 	HashedPassword  string `gorm:"not null"`
 	BusinessName    string `gorm:"not null"`
@@ -24,5 +24,6 @@ type Users struct {
 	UpdatedAt *time.Time
 	DeletedAt *time.Time `gorm:"index"`
 
-	Products []Products `gorm:"foreignKey:UserUUID;references:UUID"`
+	Products     []Products     `gorm:"foreignKey:UserUUID;references:UUID"`
+	Transactions []Transactions `gorm:"foreignKey:UserUUID;references:UUID"`
 }
