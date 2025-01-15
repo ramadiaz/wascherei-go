@@ -49,7 +49,7 @@ func (r *CompRepositoriesImpl) FindByUUID(ctx *gin.Context, tx *gorm.DB, UUID st
 func (r *CompRepositoriesImpl) FindByUserUUID(ctx *gin.Context, tx *gorm.DB, UserUUID string) (*[]models.Products, *exceptions.Exception) {
 	var products []models.Products
 
-	result := tx.Where("usuer_uuid = ?", UserUUID).Find(&products)
+	result := tx.Where("user_uuid = ?", UserUUID).Find(&products)
 	if result.Error != nil {
 		return nil, exceptions.ParseGormError(result.Error)
 	}
