@@ -10,6 +10,9 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/google/wire"
 	"gorm.io/gorm"
+	controllers5 "wascherei-go/api/analytics/controllers"
+	repositories4 "wascherei-go/api/analytics/repositories"
+	services5 "wascherei-go/api/analytics/services"
 	controllers3 "wascherei-go/api/products/controllers"
 	repositories2 "wascherei-go/api/products/repositories"
 	services3 "wascherei-go/api/products/services"
@@ -47,8 +50,16 @@ func InitializeProductController(db *gorm.DB, validate *validator.Validate) cont
 
 func InitializeTransactionController(db *gorm.DB, validate *validator.Validate) controllers4.CompControllers {
 	compRepositories := repositories3.NewComponentRepository()
-	compServices := services4.NewComponentServices(compRepositories, db, validate)
+	repositoriesCompRepositories := repositories2.NewComponentRepository()
+	compServices := services4.NewComponentServices(compRepositories, repositoriesCompRepositories, db, validate)
 	compControllers := controllers4.NewCompController(compServices)
+	return compControllers
+}
+
+func InitializeAnalyticController(db *gorm.DB, validate *validator.Validate) controllers5.CompControllers {
+	compRepositories := repositories4.NewComponentRepository()
+	compServices := services5.NewComponentServices(compRepositories, db, validate)
+	compControllers := controllers5.NewCompController(compServices)
 	return compControllers
 }
 
@@ -60,4 +71,6 @@ var userFeatureSet = wire.NewSet(repositories.NewComponentRepository, services2.
 
 var productFeatureSet = wire.NewSet(repositories2.NewComponentRepository, services3.NewComponentServices, controllers3.NewCompController)
 
-var transactionFeatureSet = wire.NewSet(repositories3.NewComponentRepository, services4.NewComponentServices, controllers4.NewCompController)
+var transactionFeatureSet = wire.NewSet(repositories3.NewComponentRepository, repositories2.NewComponentRepository, services4.NewComponentServices, controllers4.NewCompController)
+
+var analyticFeatureSet = wire.NewSet(repositories4.NewComponentRepository, services5.NewComponentServices, controllers5.NewCompController)

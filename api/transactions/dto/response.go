@@ -13,7 +13,7 @@ type TransactionOutput struct {
 	UUID          string                   `json:"uuid"`
 	UserUUID      string                   `json:"user_uuid"`
 	ProductUUID   string                   `json:"product_uuid"`
-	UnitSize      uint                     `json:"unit_size"`
+	UnitSize      float32                  `json:"unit_size"`
 	TotalPrice    uint                     `json:"total_price"`
 	PaymentStatus string                   `json:"payment_status"`
 	Customer      string                   `json:"customer"`

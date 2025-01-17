@@ -9,14 +9,14 @@ import (
 type Transactions struct {
 	gorm.Model
 
-	ID            uint   `gorm:"not null;primaryKey"`
-	UUID          string `gorm:"not null;unique;index"`
-	UserUUID      string `gorm:"not null;index"`
-	ProductUUID   string `gorm:"not null;index"`
-	UnitSize      uint   `gorm:"not null"`
-	TotalPrice    uint   `gorm:"not null"`
-	PaymentStatus string `gorm:"not null;default:pending"`
-	Customer      string `gorm:"not null;default:Guest"`
+	ID            uint    `gorm:"not null;primaryKey"`
+	UUID          string  `gorm:"not null;unique;index"`
+	UserUUID      string  `gorm:"not null;index"`
+	ProductUUID   string  `gorm:"not null;index"`
+	UnitSize      float32 `gorm:"not null"`
+	TotalPrice    uint    `gorm:"not null"`
+	PaymentStatus string  `gorm:"not null;default:pending"`
+	Customer      string  `gorm:"not null;default:Guest"`
 	CustomerPhone *string
 
 	CreatedAt time.Time

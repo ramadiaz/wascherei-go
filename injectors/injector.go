@@ -20,6 +20,10 @@ import (
 	transactionControllers "wascherei-go/api/transactions/controllers"
 	transactionRepositories "wascherei-go/api/transactions/repositories"
 	transactionServices "wascherei-go/api/transactions/services"
+	
+	analyticControllers "wascherei-go/api/analytics/controllers"
+	analyticRepositories "wascherei-go/api/analytics/repositories"
+	analyticServices "wascherei-go/api/analytics/services"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/google/wire"
@@ -45,8 +49,15 @@ var productFeatureSet = wire.NewSet(
 
 var transactionFeatureSet = wire.NewSet(
 	transactionRepositories.NewComponentRepository,
+	productRepositories.NewComponentRepository,
 	transactionServices.NewComponentServices,
 	transactionControllers.NewCompController,
+)
+
+var analyticFeatureSet = wire.NewSet(
+	analyticRepositories.NewComponentRepository,
+	analyticServices.NewComponentServices,
+	analyticControllers.NewCompController,
 )
 
 func InitializeInternalAuthController(validate *validator.Validate) internalAuthControllers.CompControllers {
@@ -66,5 +77,10 @@ func InitializeProductController(db *gorm.DB, validate *validator.Validate) prod
 
 func InitializeTransactionController(db *gorm.DB, validate *validator.Validate) transactionControllers.CompControllers {
 	wire.Build(transactionFeatureSet)
+	return nil
+}
+
+func InitializeAnalyticController(db *gorm.DB, validate *validator.Validate) analyticControllers.CompControllers {
+	wire.Build(analyticFeatureSet)
 	return nil
 }

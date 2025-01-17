@@ -19,8 +19,10 @@ func CompRouters(api *gin.RouterGroup, db *gorm.DB, validate *validator.Validate
 	userController := injectors.InitializeUserController(db, validate)
 	productController := injectors.InitializeProductController(db, validate)
 	transactionController := injectors.InitializeTransactionController(db, validate)
+	analyticController := injectors.InitializeAnalyticController(db, validate)
 
 	AuthRoutes(api, userController)
 	ProductRoutes(api, productController)
 	TransactionRoutes(api, transactionController)
+	AnalyticsRoutes(api, analyticController)
 }
